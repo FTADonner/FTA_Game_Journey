@@ -1,25 +1,25 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Assests/Dead Hase2.png" type="Texture" id=1]
 [ext_resource path="res://Assests/Dead Hase3.png" type="Texture" id=2]
-[ext_resource path="res://Dead Hase4.png" type="Texture" id=3]
-[ext_resource path="res://Dead Hase5.png" type="Texture" id=4]
+[ext_resource path="res://Assests/Dead Hase4.png" type="Texture" id=3]
+[ext_resource path="res://Assests/Dead Hase5.png" type="Texture" id=4]
 [ext_resource path="res://Assests/Hase1.png" type="Texture" id=5]
 [ext_resource path="res://Assests/Hase Sprung.png" type="Texture" id=6]
 
 [sub_resource type="GDScript" id=3]
 script/source = "extends KinematicBody2D
 
-const GRAVITY = 600
-const SPEED = 200
-const JUMP_POWER = 500
+const GRAVITY = 500
+const SPEED = 100
+const JUMP_POWER = 400
 const UP_VECTOR = Vector2(0, -1)
 
 onready var sprite = $AnimatedSprite
 
 var movement = Vector2(SPEED, 0)
 var is_alive = true
-var jump_x = 0
+var jump_x = -1
 
 func _ready():
 	sprite.play(\"walk\")
@@ -29,12 +29,7 @@ func _physics_process(delta):
 	if is_alive == false:
 		return
 		
-		movement.y += GRAVITY * delta
-
-	if is_on_wall():
-		movement.x *= -1
-		sprite.flip_h = not sprite.flip_h == false
-
+	movement.y += GRAVITY * delta
 
 	if is_on_floor():
 		if sprite.animation == \"jump\":
@@ -63,7 +58,7 @@ func on_landing():
 
 func turn():
 	movement.x *= -1
-	sprite.flip_h = not sprite.flip_h
+	$AnimatedSprite.flip_h = not $AnimatedSprite.flip_h
 
 func jump():
 	sprite.play(\"jump\")
@@ -78,6 +73,11 @@ func _on_AnimatedSprite_animation_finished():
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
+"frames": [ ExtResource( 6 ) ],
+"loop": true,
+"name": "jump",
+"speed": 5.0
+}, {
 "frames": [ ExtResource( 5 ), ExtResource( 1 ), ExtResource( 2 ), ExtResource( 3 ), ExtResource( 4 ) ],
 "loop": false,
 "name": "die",
@@ -87,37 +87,21 @@ animations = [ {
 "loop": true,
 "name": "walk",
 "speed": 3.0
-}, {
-"frames": [ ExtResource( 6 ) ],
-"loop": true,
-"name": "jump",
-"speed": 5.0
 } ]
 
 [sub_resource type="RectangleShape2D" id=4]
-extents = Vector2( 36.25, 11.5 )
-
-[sub_resource type="CircleShape2D" id=5]
-radius = 10.0499
+extents = Vector2( 47.5, 43.75 )
 
 [node name="Hase" type="KinematicBody2D"]
 collision/safe_margin = 0.001
 script = SubResource( 3 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
-position = Vector2( 11, 9 )
 scale = Vector2( 4.311, 3.5 )
 frames = SubResource( 1 )
-animation = "jump"
-
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
-position = Vector2( 4.75, -1.00001 )
-shape = SubResource( 4 )
+animation = "walk"
+flip_h = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2( -25, -20 )
-shape = SubResource( 5 )
-
-[node name="CollisionShape2D3" type="CollisionShape2D" parent="."]
-position = Vector2( 37, -20 )
-shape = SubResource( 5 )
+position = Vector2( -4, -40 )
+shape = SubResource( 4 )
